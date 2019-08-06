@@ -1,0 +1,23 @@
+dist: xenial
+language: python
+python:
+  - '3.7'
+services:
+  - postgresql
+addons:
+  postgresql: '10'
+install:
+  - pip install -r requirements.dev.txt
+  - pip install -e .
+  - npm install
+  - cd newdle/client
+  - npm install
+  - cd -
+before_script:
+  - psql -c 'CREATE DATABASE newdle_tests;' -U postgres
+  - cp newdle/newdle.cfg.example newdle/newdle.cfg
+script:
+  - pytest
+  - cd newdle/client;npm run test
+notifications:
+  email: false
